@@ -1,0 +1,166 @@
+<header class="page-header">
+  <h1>Forms</h1>
+  <p class="subtitle">
+    Reactive forms across a stepper, with validation state exposed as signals via
+    <code>toSignal</code>.
+  </p>
+</header>
+
+<mat-stepper orientation="horizontal" linear #stepper class="showcase-stepper">
+  <mat-step [stepControl]="personalInfoForm" label="Personal info">
+    <form [formGroup]="personalInfoForm" class="step-form">
+      <div class="field-row">
+        <mat-form-field appearance="outline">
+          <mat-label>First name</mat-label>
+          <input matInput formControlName="firstName" />
+          @if (errorFor('firstName'); as error) {
+            <mat-error>{{ error }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Last name</mat-label>
+          <input matInput formControlName="lastName" />
+          @if (errorFor('lastName'); as error) {
+            <mat-error>{{ error }}</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="field-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" />
+          <mat-icon matPrefix>mail</mat-icon>
+          @if (errorFor('email'); as error) {
+            <mat-error>{{ error }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Birth date</mat-label>
+          <input matInput [matDatepicker]="birthPicker" formControlName="birthDate" />
+          <mat-datepicker-toggle matIconSuffix [for]="birthPicker" />
+          <mat-datepicker #birthPicker />
+          @if (errorFor('birthDate'); as error) {
+            <mat-error>{{ error }}</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="live-preview">
+        <mat-icon>bolt</mat-icon>
+        <span>Live signal preview: {{ liveValue() | json }}</span>
+      </div>
+
+      <div class="step-actions">
+        <button mat-flat-button color="primary" matStepperNext [disabled]="!personalInfoValid()">
+          Next
+        </button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step [stepControl]="addressForm" label="Address">
+    <form [formGroup]="addressForm" class="step-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Street</mat-label>
+        <input matInput formControlName="street" />
+      </mat-form-field>
+
+      <div class="field-row">
+        <mat-form-field appearance="outline">
+          <mat-label>City</mat-label>
+          <input matInput formControlName="city" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Country</mat-label>
+          <mat-select formControlName="country">
+            @for (country of countries; track country) {
+              <mat-option [value]="country">{{ country }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-slide-toggle formControlName="remote">Remote position</mat-slide-toggle>
+
+      <div class="step-actions">
+        <button mat-stroked-button matStepperPrevious>Back</button>
+        <button mat-flat-button color="primary" matStepperNext [disabled]="!addressValid()">
+          Next
+        </button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step label="Preferences">
+    <form [formGroup]="preferencesForm" class="step-form">
+      <div>
+        <label class="section-label">Preferred contact method</label>
+        <mat-radio-group formControlName="contactMethod" class="radio-row">
+          <mat-radio-button value="email">Email</mat-radio-button>
+          <mat-radio-button value="phone">Phone</mat-radio-button>
+          <mat-radio-button value="sms">SMS</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <mat-checkbox formControlName="newsletter">Subscribe to the newsletter</mat-checkbox>
+
+      <div class="slider-row">
+        <label class="section-label">Angular experience (years)</label>
+        <mat-slider [min]="0" [max]="10" [step]="1" discrete>
+          <input matSliderThumb formControlName="experience" />
+        </mat-slider>
+      </div>
+
+      <mat-form-field appearance="outline" class="interests-field">
+        <mat-label>Interests</mat-label>
+        <mat-chip-grid #chipGrid>
+          @for (interest of interests(); track interest) {
+            <mat-chip-row (removed)="removeInterest(interest)">
+              {{ interest }}
+              <button matChipRemove><mat-icon>cancel</mat-icon></button>
+            </mat-chip-row>
+          }
+        </mat-chip-grid>
+        <input
+          placeholder="Add an interest..."
+          formControlName="interestControl"
+          [matChipInputFor]="chipGrid"
+          [matAutocomplete]="auto"
+          (matChipInputTokenEnd)="addInterest($event.value); $event.chipInput.clear()"
+        />
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addInterest($event.option.viewValue)">
+          @for (suggestion of interestSuggestions(); track suggestion) {
+            <mat-option [value]="suggestion">{{ suggestion }}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <div class="step-actions">
+        <button mat-stroked-button matStepperPrevious>Back</button>
+        <button mat-flat-button color="primary" (click)="submit()">
+          <mat-icon>check</mat-icon>
+          Submit
+        </button>
+      </div>
+    </form>
+  </mat-step>
+</mat-stepper>
+
+@if (submitted()) {
+  <mat-card class="summary-card">
+    <mat-card-header>
+      <mat-card-title>Submitted payload</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <pre>{{ summary() | json }}</pre>
+      <button mat-button (click)="reset()">
+        <mat-icon>restart_alt</mat-icon>
+        Reset form
+      </button>
+    </mat-card-content>
+  </mat-card>
+}

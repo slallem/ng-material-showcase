@@ -1,0 +1,75 @@
+.page-header {
+  margin-bottom: 1rem;
+
+  h1 {
+    margin: 0 0 0.25rem;
+  }
+
+  .subtitle {
+    margin: 0;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+
+  .filter-field {
+    flex: 1 1 320px;
+    max-width: 420px;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .row-count {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+}
+
+.table-container {
+  background: var(--mat-sys-surface-container-low, var(--mat-sys-surface));
+  border-radius: 12px;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+}
+
+.selected-row {
+  background: var(--mat-sys-primary-container);
+}
+
+.no-data {
+  text-align: center;
+  padding: 2rem !important;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.status-chip {
+  font-size: 0.75rem;
+  min-height: 24px;
+
+  &.status-active {
+    --mat-chip-label-text-color: #12752b;
+    background-color: #d4f7dc !important;
+  }
+
+  &.status-leave {
+    --mat-chip-label-text-color: #8a5b00;
+    background-color: #ffe7b3 !important;
+  }
+
+  &.status-inactive {
+    --mat-chip-label-text-color: var(--mat-sys-on-error-container);
+    background-color: var(--mat-sys-error-container) !important;
+  }
+}

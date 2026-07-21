@@ -1,0 +1,73 @@
+<mat-sidenav-container class="app-shell">
+  <mat-sidenav
+    #sidenav
+    class="app-sidenav"
+    [mode]="sidenavMode()"
+    [opened]="sidenavOpened()"
+    [fixedInViewport]="true"
+  >
+    <div class="brand">
+      <mat-icon>widgets</mat-icon>
+      <span>Material Showcase</span>
+    </div>
+    <mat-nav-list>
+      @for (link of navLinks; track link.path) {
+        <a
+          mat-list-item
+          [routerLink]="link.path"
+          routerLinkActive="active-link"
+          (click)="isHandset() && sidenav.close()"
+        >
+          <mat-icon matListItemIcon>{{ link.icon }}</mat-icon>
+          <span matListItemTitle>{{ link.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" class="app-toolbar">
+      <button
+        mat-icon-button
+        (click)="sidenav.toggle()"
+        aria-label="Toggle navigation"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="toolbar-title">{{ title() }}</span>
+      <span class="spacer"></span>
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="themeMenu"
+        aria-label="Change color theme"
+      >
+        <mat-icon>{{ themeIcon() }}</mat-icon>
+      </button>
+      <mat-menu #themeMenu="matMenu">
+        @for (option of themeOptions; track option.mode) {
+          <button
+            mat-menu-item
+            (click)="themeService.setMode(option.mode)"
+            [class.active-theme]="themeService.mode() === option.mode"
+          >
+            <mat-icon>{{ option.icon }}</mat-icon>
+            <span>{{ option.label }}</span>
+          </button>
+        }
+      </mat-menu>
+      <a
+        mat-icon-button
+        href="https://material.angular.dev"
+        target="_blank"
+        rel="noopener"
+        aria-label="Angular Material docs"
+      >
+        <mat-icon>open_in_new</mat-icon>
+      </a>
+    </mat-toolbar>
+
+    <main class="app-content">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

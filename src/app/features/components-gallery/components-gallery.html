@@ -1,0 +1,190 @@
+<header class="page-header">
+  <h1>Components</h1>
+  <p class="subtitle">A tour of Angular Material building blocks, all wired up with signals.</p>
+</header>
+
+<div class="gallery-grid">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Buttons</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="button-row">
+      <button mat-button>Basic</button>
+      <button mat-flat-button color="primary">Flat</button>
+      <button mat-stroked-button color="primary">Stroked</button>
+      <button mat-raised-button color="accent">Raised</button>
+      <button mat-icon-button matTooltip="Settings"><mat-icon>settings</mat-icon></button>
+      <button mat-fab color="primary" matTooltip="Add"><mat-icon>add</mat-icon></button>
+      <button mat-mini-fab color="accent" matTooltip="Edit"><mat-icon>edit</mat-icon></button>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Like &amp; badges</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="button-row">
+      <button mat-stroked-button (click)="toggleLike()" [color]="liked() ? 'warn' : undefined">
+        <mat-icon>{{ liked() ? 'favorite' : 'favorite_border' }}</mat-icon>
+        {{ likeCount() }}
+      </button>
+
+      <button
+        mat-icon-button
+        [matBadge]="notifications()"
+        [matBadgeHidden]="notifications() === 0"
+        matBadgeColor="warn"
+        matTooltip="Notifications"
+        (click)="clearNotifications()"
+      >
+        <mat-icon>notifications</mat-icon>
+      </button>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Toggles &amp; checkboxes</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="toggle-list">
+      <mat-slide-toggle [checked]="darkMode()" (change)="darkMode.set($event.checked)">
+        Dark mode
+      </mat-slide-toggle>
+      <mat-slide-toggle
+        [checked]="notificationsEnabled()"
+        (change)="notificationsEnabled.set($event.checked)"
+      >
+        Email notifications
+      </mat-slide-toggle>
+      <mat-checkbox [checked]="termsAccepted()" (change)="termsAccepted.set($event.checked)">
+        Accept terms
+      </mat-checkbox>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>View mode</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-button-toggle-group
+        [value]="viewMode()"
+        (change)="viewMode.set($event.value)"
+        aria-label="View mode"
+      >
+        <mat-button-toggle value="list"><mat-icon>view_list</mat-icon></mat-button-toggle>
+        <mat-button-toggle value="grid"><mat-icon>grid_view</mat-icon></mat-button-toggle>
+        <mat-button-toggle value="board"><mat-icon>view_kanban</mat-icon></mat-button-toggle>
+      </mat-button-toggle-group>
+      <p class="hint">Selected: {{ viewMode() }}</p>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Progress</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-progress-bar mode="determinate" [value]="taskProgress()" />
+      <div class="progress-footer">
+        <span>{{ progressLabel() }}</span>
+        <mat-progress-spinner mode="indeterminate" diameter="24" />
+      </div>
+      <button mat-button (click)="bumpProgress()">
+        <mat-icon>add_task</mat-icon>
+        Advance task
+      </button>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Chips</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-chip-listbox aria-label="Cuisine selection" multiple>
+        @for (option of cuisineOptions; track option) {
+          <mat-chip-option
+            [selected]="selectedCuisines().includes(option)"
+            (click)="toggleCuisine(option)"
+          >
+            {{ option }}
+          </mat-chip-option>
+        }
+      </mat-chip-listbox>
+      <p class="hint">Selected: {{ selectedCuisines().join(', ') || 'none' }}</p>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Menu &amp; dialog</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="button-row">
+      <button mat-stroked-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+        Actions
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item><mat-icon>share</mat-icon><span>Share</span></button>
+        <button mat-menu-item><mat-icon>content_copy</mat-icon><span>Duplicate</span></button>
+        <button mat-menu-item><mat-icon>archive</mat-icon><span>Archive</span></button>
+      </mat-menu>
+
+      <button mat-stroked-button color="warn" (click)="openConfirmDialog()">
+        <mat-icon>delete</mat-icon>
+        Delete project
+      </button>
+      @if (dialogResult(); as result) {
+        <span class="hint">Last result: {{ result }}</span>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="span-2">
+    <mat-card-header>
+      <mat-card-title>Tabs</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-tab-group>
+        <mat-tab label="Overview">
+          <p class="tab-content">Signals make change detection precise: only what reads a signal reruns.</p>
+        </mat-tab>
+        <mat-tab label="Details">
+          <p class="tab-content">Every interactive demo on this page is powered by a <code>signal()</code> or <code>computed()</code>.</p>
+        </mat-tab>
+        <mat-tab label="Settings">
+          <p class="tab-content">No RxJS subscriptions to manage manually — signals clean up automatically.</p>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="span-2">
+    <mat-card-header>
+      <mat-card-title>Expansion panels</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>What are signals?</mat-panel-title>
+          </mat-expansion-panel-header>
+          <p>Signals are reactive primitives that hold a value and notify consumers when it changes.</p>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>Why Angular Material?</mat-panel-title>
+          </mat-expansion-panel-header>
+          <p>It implements Material Design 3 components with full accessibility support out of the box.</p>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>Is this production ready?</mat-panel-title>
+          </mat-expansion-panel-header>
+          <p>This is a showcase app — use it as a reference for wiring components together with signals.</p>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </mat-card-content>
+  </mat-card>
+</div>
